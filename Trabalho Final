@@ -13,8 +13,10 @@ typedef struct {
 } Usuario;
 
 typedef struct {
-    char nome[100];
-    int id;
+    char nome[100];         
+    char descricao[200];    
+    char classificacao[20]; 
+    int id;                 
 } Filme;
 
 typedef struct {
@@ -114,7 +116,7 @@ void inicializarAdministrador(Fila *q) {
     q->data[q->fim] = administrador;
 }
 
-// função para verificar se filme já está cadastrado
+//função pra cadastrar filme
 int filmeJaCadastrado(FilaF *p, char *nome) {
     for (int i = 0; i < p->fim; i++) {
         if (strcmp(p->data[i].nome, nome) == 0) {
@@ -122,19 +124,17 @@ int filmeJaCadastrado(FilaF *p, char *nome) {
         }
     }
     return 0;
-}
+};
 
-// função para listar usuários
-void listarUsuario(Fila *q) {
-    for (int i = 0; i <= q->fim; i++) {  // Exibe os usuários cadastrados
+void listarUsuario(Fila *q){
+    for (int i = 0; i <= q->fim; i++) {  // Exibe os usuarios cadastrados
         printf("Nome: %s / ID: %d\n", q->data[i].nome, q->data[i].id);
     }
-}
+};
 
-// função para excluir usuários
-void excluirUsuario(Fila *q) {
+void excluirUsuario(Fila *q){
     printf("Usuários:\n");
-    for (int i = 1; i <= q->fim; i++) {  // Exibe os usuários cadastrados
+    for (int i = 1; i <= q->fim; i++) {  // Exibe os usuarios cadastrados
         printf("Usuário: %s / ID: %d\n", q->data[i].nome, q->data[i].id);
     }
 
@@ -153,7 +153,7 @@ void excluirUsuario(Fila *q) {
                 q->data[j] = q->data[j + 1];
             }
 
-            // Atualiza q->fim
+            // Atualiza p->fim
             q->fim--;
             printf("Usuário excluído com sucesso!\n");
             break;
@@ -163,9 +163,7 @@ void excluirUsuario(Fila *q) {
     if (!encontrado) {
         printf("Usuário com ID %d não encontrado!\n", idUsuario);
     }
-}
-
-// função para cadastrar filme
+};
 void cadastrarFilme(FilaF *p) {
     if (p->fim < 100) {
         Filme novoFilme;
@@ -173,6 +171,14 @@ void cadastrarFilme(FilaF *p) {
         getchar();
         fgets(novoFilme.nome, 100, stdin);
         novoFilme.nome[strcspn(novoFilme.nome, "\n")] = '\0';
+
+        printf("Digite a classificação do filme: ");
+        fgets(novoFilme.classificacao, 100, stdin);
+        novoFilme.classificacao[strcspn(novoFilme.classificacao, "\n")] = '\0';
+
+        printf("Digite a descrição do filme: ");
+        fgets(novoFilme.descricao, 100, stdin);
+        novoFilme.descricao[strcspn(novoFilme.descricao, "\n")]= '\0';
 
         if (filmeJaCadastrado(p, novoFilme.nome)) {
             printf("Filme já cadastrado!\n");
@@ -189,7 +195,7 @@ void cadastrarFilme(FilaF *p) {
     }
 }
 
-// função para editar filmes
+//função pra edição de filmes
 void editarFilme(FilaF *p) {
     printf("Filmes:\n");
     for (int i = 0; i < p->fim; i++) {  // Exibe os filmes cadastrados
@@ -205,7 +211,13 @@ void editarFilme(FilaF *p) {
     for (int i = 0; i < p->fim; i++) {
         if (p->data[i].id == idFilme) {
             encontrado = 1;
-
+                   int infoFilme;
+    printf("1. Nome.\n");
+    printf("2. Classificação.\n");
+    printf("3. Descrição.\n");
+    printf("Digite o id da informação que deseja editar: ");
+    scanf("%d", &infoFilme); 
+            if(infoFilme == 1){
             // Editar o filme
             printf("Editar nome do filme (atualmente: %s): ", p->data[i].nome);
             getchar();  // Limpa o buffer do teclado
@@ -214,17 +226,46 @@ void editarFilme(FilaF *p) {
 
             printf("Filme editado com sucesso!\n");
             break;
+          }else if(infoFilme==2){
+            // Editar o filme
+            printf("Editar classificação do filme (atualmente: %s): ", p->data[i].classificacao);
+            getchar();  // Limpa o buffer do teclado
+            fgets(p->data[i].classificacao, 100, stdin);
+            p->data[i].classificacao[strcspn(p->data[i].classificacao, "\n")] = '\0';  // Remove a nova linha
+
+            printf("Filme editado com sucesso!\n");
+            break;
+          }else if(infoFilme==3){
+            // Editar o filme
+            printf("Editar descrição do filme (atualmente: %s): ", p->data[i].descricao);
+            getchar();  // Limpa o buffer do teclado
+            fgets(p->data[i].descricao, 100, stdin);
+            p->data[i].descricao[strcspn(p->data[i].descricao, "\n")] = '\0';  // Remove a nova linha
+
+            printf("Filme editado com sucesso!\n");
+            break;
+          }
         }
     }
 
     if (!encontrado) {
         printf("Filme com ID %d não encontrado!\n", idFilme);
     }
+};
+// Listar filmes
+void listarFilmes(FilaF *p) {
+    if (p->fim == 0) {
+        printf("Nenhum filme cadastrado!\n");
+        return;
+    }
+    printf("Lista de filmes cadastrados:\n");
+    for (int i = 0; i < p->fim; i++) {
+        printf("Nome: %s / ID: %d\n", p->data[i].nome, p->data[i].id);
+    }
 }
 
-// função para excluir filmes
-void excluirFilme(FilaF *p) {
-    printf("Filmes:\n");
+void excluirFilme(FilaF *p){
+ printf("Filmes:\n");
     for (int i = 0; i < p->fim; i++) {  // Exibe os filmes cadastrados
         printf("Filme: %s / ID: %d\n", p->data[i].nome, p->data[i].id);
     }
@@ -254,33 +295,51 @@ void excluirFilme(FilaF *p) {
     if (!encontrado) {
         printf("Filme com ID %d não encontrado!\n", idFilme);
     }
-}
 
+};
+void verInfo(FilaF *p) {
+    printf("Ver mais informações sobre um filme\n");
 
-// função para buscar filme por título
-void buscarFilmePorTitulo(FilaF *p, char *titulo) {
+    if (p->fim == 0) {
+        printf("Nenhum filme cadastrado!\n");
+        return;
+    }
+
+    printf("Filmes:\n");
+    for (int i = 0; i < p->fim; i++) {
+        printf("Filme: %s / ID: %d\n", p->data[i].nome, p->data[i].id);
+    }
+
+    int idFilme;
+    printf("Digite o ID do filme para obter mais informações: ");
+    scanf("%d", &idFilme);
+
+    // Verifica se o ID do filme é válido
     int encontrado = 0;
     for (int i = 0; i < p->fim; i++) {
-        if (strstr(p->data[i].nome, titulo) != NULL) {
-            printf("Filme encontrado: %s / ID: %d\n", p->data[i].nome, p->data[i].id);
+        if (p->data[i].id == idFilme) {
             encontrado = 1;
+            printf("Nome do filme: %s\n", p->data[i].nome);
+            printf("ID do filme: %d\n", p->data[i].id);
+            printf("Descrição do filme: %s\n", p->data[i].descricao);
+            printf("Classificação de conteúdo: %s\n", p->data[i].classificacao);
+            break;
         }
     }
+
     if (!encontrado) {
-        printf("Nenhum filme encontrado com o titulo: %s\n", titulo);
+        printf("Filme com ID %d não encontrado!\n", idFilme);
     }
 }
-
-// função para a área Administrativa
+// funcao para a área Administrativa
 void areaAdministrativa() {
     int opcaoAdm;
-    char titulo[100];
     do {
         printf("\nOpções da Área Administrativa:\n");
         printf("1. Cadastrar filme\n");
-        printf("2. Editar filme\n");
-        printf("3. Excluir filme\n");
-        printf("4. Buscar filme por título\n");
+        printf("2. Listar filmes\n");
+        printf("3. Editar filme\n");
+        printf("4. Excluir filme\n");
         printf("5. Listar usuários\n");
         printf("6. Excluir usuários\n");
         printf("7. Deslogar\n");
@@ -290,22 +349,19 @@ void areaAdministrativa() {
         switch (opcaoAdm) {
             case 1:
                 printf("Cadastrar filme\n");
-                cadastrarFilme(&p);
+                cadastrarFilme(&p);              
                 break;
             case 2:
+                printf("Listar filmes\n");
+                listarFilmes(&p);
+                break;
+            case 3:
                 printf("Editar filme\n");
                 editarFilme(&p);
                 break;
-            case 3:
+            case 4:
                 printf("Excluir filme\n");
                 excluirFilme(&p);
-                break;
-            case 4:
-                printf("Digite o título do filme que deseja buscar: ");
-                getchar();  // Limpa o buffer do teclado
-                fgets(titulo, 100, stdin);
-                titulo[strcspn(titulo, "\n")] = '\0';  // Remove a nova linha
-                buscarFilmePorTitulo(&p, titulo);
                 break;
             case 5:
                 printf("Listar usuários\n");
@@ -321,17 +377,17 @@ void areaAdministrativa() {
             default:
                 printf("Opção inválida!\n");
         }
-    } while (opcaoAdm != 7);  // Continua até o usuário escolher deslogar
+    } while (opcaoAdm <=6 );  // Continua até o usuário escolher deslogar
 }
 
-// função para a área do Usuário Comum
+
+// Função para a área do Usuário Comum
 void areaUsuario() {
     int opcaoUsuario;
-    char titulo[100];
     do {
         printf("\nOpções para Usuário:\n");
         printf("1. Listar filmes\n");
-        printf("2. Buscar filme por título\n");
+        printf("2. Ver mais informações sobre um filme\n");
         printf("3. Deslogar\n");
         printf("Escolha uma opção: ");
         scanf("%d", &opcaoUsuario);
@@ -339,14 +395,10 @@ void areaUsuario() {
         switch (opcaoUsuario) {
             case 1:
                 printf("Listar filmes\n");
-                // função para listar filmes vai aqui
+                listarFilmes(&p);  
                 break;
             case 2:
-                printf("Digite o título do filme que deseja buscar: ");
-                getchar();  // Limpa o buffer do teclado
-                fgets(titulo, 100, stdin);
-                titulo[strcspn(titulo, "\n")] = '\0';  // Remove a nova linha
-                buscarFilmePorTitulo(&p, titulo);
+               verInfo(&p);
                 break;
             case 3:
                 printf("Deslogando...\n");
@@ -381,7 +433,7 @@ int main() {
                 if (usuarioLogado != -1) {
                     if (q.data[usuarioLogado].tipo == 1) {
                         areaAdministrativa();
-                    } else {
+                    } else{
                         areaUsuario();
                     }
                 }
