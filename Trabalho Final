@@ -22,37 +22,37 @@ typedef struct {
 typedef struct {
     Filme data[100];
     int inicio, fim;
-} FilaF;
+} ListaF;
 
-FilaF p; // Variável global
+ListaF p; // Variável global
 typedef struct {
     Usuario data[MAX];
     int inicio, fim;
-} Fila;
-Fila q; 
+} Lista;
+Lista q; 
 
-// Inicializa a fila
-void initializeQueue(Fila *q) {
+// Inicializa a lista
+void initializeQueue(Lista *q) {
     q->inicio = q->fim = -1;
 }
 
-void inicializarFila(FilaF *p) {
+void inicializarLista(ListaF *p) {
     p->inicio = 0;
     p->fim = 0;
 }
 
-// Verifica se a fila está vazia
-int isEmpty(Fila *q) {
+// Verifica se a lista está vazia
+int isEmpty(Lista *q) {
     return q->inicio == -1;
 }
 
-// Verifica se a fila está cheia
-int isFull(Fila *q) {
+// Verifica se a lista está cheia
+int isFull(Lista *q) {
     return q->fim == MAX - 1;
 }
 
 // email já existe
-int emailJaCadastrado(Fila *q, char *email) {
+int emailJaCadastrado(Lista *q, char *email) {
     for (int i = q->inicio; i <= q->fim; i++) {
         if (strcmp(q->data[i].email, email) == 0) {
             return 1;  // Email já cadastrado
@@ -62,7 +62,7 @@ int emailJaCadastrado(Fila *q, char *email) {
 }
 
 // cadastrar 
-void cadastrar(Fila *q) {
+void cadastrar(Lista *q) {
     Usuario usuario;
     printf("Digite o nome: ");
     scanf(" %[^\n]%*c", usuario.nome);  // Para ler espaços
@@ -80,7 +80,7 @@ void cadastrar(Fila *q) {
     usuario.tipo = 2;  // Todos os usuários cadastrados serão tipo 2
     usuario.id = q->fim + 1;
     if (isFull(q)) {
-        printf("Fila cheia! Não é possível adicionar mais usuários.\n");
+        printf("Lista cheia! Não é possível adicionar mais usuários.\n");
     } else {
         if (isEmpty(q)) {
             q->inicio = q->fim = 0;
@@ -93,7 +93,7 @@ void cadastrar(Fila *q) {
 }
 
 //  login
-int Login(Fila *q, char *email, char *senha) {
+int Login(Lista *q, char *email, char *senha) {
     if (isEmpty(q)) {
         printf("Nenhum usuário cadastrado.\n");
         return 0;
@@ -110,14 +110,14 @@ int Login(Fila *q, char *email, char *senha) {
 }
 
 //  inicializar o sistema com o administrador
-void inicializarAdministrador(Fila *q) {
+void inicializarAdministrador(Lista *q) {
     Usuario administrador = {"Sr. Administrador", "adm@gmail.com", "123", 1, 0};  // Tipo 1 para admin
     q->inicio = q->fim = 0;
     q->data[q->fim] = administrador;
 }
 
 //função pra cadastrar filme
-int filmeJaCadastrado(FilaF *p, char *nome) {
+int filmeJaCadastrado(ListaF *p, char *nome) {
     for (int i = 0; i < p->fim; i++) {
         if (strcmp(p->data[i].nome, nome) == 0) {
             return 1;
@@ -126,13 +126,13 @@ int filmeJaCadastrado(FilaF *p, char *nome) {
     return 0;
 };
 
-void listarUsuario(Fila *q){
+void listarUsuario(Lista *q){
     for (int i = 0; i <= q->fim; i++) {  // Exibe os usuarios cadastrados
         printf("Nome: %s / ID: %d\n", q->data[i].nome, q->data[i].id);
     }
 };
 
-void excluirUsuario(Fila *q){
+void excluirUsuario(Lista *q){
     printf("Usuários:\n");
     for (int i = 1; i <= q->fim; i++) {  // Exibe os usuarios cadastrados
         printf("Usuário: %s / ID: %d\n", q->data[i].nome, q->data[i].id);
@@ -164,7 +164,7 @@ void excluirUsuario(Fila *q){
         printf("Usuário com ID %d não encontrado!\n", idUsuario);
     }
 };
-void cadastrarFilme(FilaF *p) {
+void cadastrarFilme(ListaF *p) {
     if (p->fim < 100) {
         Filme novoFilme;
         printf("Digite o nome do filme: ");
@@ -173,7 +173,7 @@ void cadastrarFilme(FilaF *p) {
         novoFilme.nome[strcspn(novoFilme.nome, "\n")] = '\0';
 
         printf("Digite a classificação do filme: ");
-        fgets(novoFilme.classificacao, 100, stdin);
+        fgets(novoFilme.classificacao, 20, stdin);
         novoFilme.classificacao[strcspn(novoFilme.classificacao, "\n")] = '\0';
 
         printf("Digite a descrição do filme: ");
@@ -191,12 +191,12 @@ void cadastrarFilme(FilaF *p) {
 
         printf("Filme cadastrado com sucesso! ID: %d\n", novoFilme.id);
     } else {
-        printf("Fila cheia! Não é possível cadastrar mais filmes.\n");
+        printf("Lista cheia! Não é possível cadastrar mais filmes.\n");
     }
 }
 
 //função pra edição de filmes
-void editarFilme(FilaF *p) {
+void editarFilme(ListaF *p) {
     printf("Filmes:\n");
     for (int i = 0; i < p->fim; i++) {  // Exibe os filmes cadastrados
         printf("Filme: %s / ID: %d\n", p->data[i].nome, p->data[i].id);
@@ -230,7 +230,7 @@ void editarFilme(FilaF *p) {
             // Editar o filme
             printf("Editar classificação do filme (atualmente: %s): ", p->data[i].classificacao);
             getchar();  // Limpa o buffer do teclado
-            fgets(p->data[i].classificacao, 100, stdin);
+            fgets(p->data[i].classificacao, 20, stdin);
             p->data[i].classificacao[strcspn(p->data[i].classificacao, "\n")] = '\0';  // Remove a nova linha
 
             printf("Filme editado com sucesso!\n");
@@ -253,7 +253,7 @@ void editarFilme(FilaF *p) {
     }
 };
 // Listar filmes
-void listarFilmes(FilaF *p) {
+void listarFilmes(ListaF *p) {
     if (p->fim == 0) {
         printf("Nenhum filme cadastrado!\n");
         return;
@@ -264,7 +264,7 @@ void listarFilmes(FilaF *p) {
     }
 }
 
-void excluirFilme(FilaF *p){
+void excluirFilme(ListaF *p){
  printf("Filmes:\n");
     for (int i = 0; i < p->fim; i++) {  // Exibe os filmes cadastrados
         printf("Filme: %s / ID: %d\n", p->data[i].nome, p->data[i].id);
@@ -297,7 +297,7 @@ void excluirFilme(FilaF *p){
     }
 
 };
-void verInfo(FilaF *p) {
+void verInfo(ListaF *p) {
     printf("Ver mais informações sobre um filme\n");
 
     if (p->fim == 0) {
@@ -411,7 +411,7 @@ void areaUsuario() {
 
 int main() {
     initializeQueue(&q);
-    inicializarFila(&p);
+    inicializarLista(&p);
     inicializarAdministrador(&q);  // Inicializa o administrador
     int opcao;
     char email[100], senha[100];
